@@ -7,8 +7,19 @@ internal class Program
     static void Main(string[] args)
     {
         (FileInfo sourceFile, DirectoryInfo targetRoot) = ParseArgs(args);
+
+        int filesCopied = 0;
+        int dirsTraversed = 0;
+
         foreach(var dir in GetSourceDirectories(sourceFile.FullName))
         {
+            dirsTraversed++;
+            if(dirsTraversed % 100 == 0)
+            {
+                Console.WriteLine("Traversed directories: " + dirsTraversed + "     Files copied: " + filesCopied);
+            }
+
+
             // GEt the target directory
             var drive = Path.GetPathRoot(dir.FullName);
             if(drive is null) 
@@ -47,6 +58,7 @@ internal class Program
                 try 
                 {
                     File.Copy(file.FullName, newFilename);
+                    filesCopied++;
                 }
                 catch (Exception e)
                 {
@@ -55,6 +67,15 @@ internal class Program
 
             }
         }
+
+
+        Console.WriteLine(filesCopied <= 0 
+            ? "No files copied." 
+            : $"\n" +
+              $"Files copied: ........... {filesCopied}\n" + 
+              $"Directories traversed: .. {dirsTraversed}\n" + 
+              $"Output: ................. {targetRoot.FullName}");
+
     }
 
     private static (FileInfo, DirectoryInfo) ParseArgs(string[] args) {
