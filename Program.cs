@@ -6,18 +6,55 @@ internal class Program
 {
     static void Main(string[] args)
     {
-        var (sourceFile, destination) = ParseArgs(args);
+        (FileInfo sourceFile, DirectoryInfo targetRoot) = ParseArgs(args);
         foreach(var dir in GetSourceDirectories(sourceFile.FullName))
         {
-            Console.WriteLine(dir.FullName);
+            // GEt the target directory
+            var drive = Path.GetPathRoot(dir.FullName);
+            if(drive is null) 
+            {
+                Console.Error.WriteLine("Skipping path without root: " + dir.FullName);
+                continue;
+            }
+            string relativePath = Path.GetRelativePath(drive, dir.FullName);
+            string targetDir = Path.Combine(targetRoot.FullName, relativePath);
 
-            // foreach (var file in dir.GetFiles())
-            // {
-            //     var destFile = Path.Combine(destination.FullName, file.Name);
-            //     file.CopyTo(destFile, true);
-            // }
+
+            // Get all images and check if they exist
+            var files = GetImageFiles(dir);
+            if(files is null || !files.Any())
+            {
+                Console.WriteLine("No images found in directory: " + dir.FullName);
+                continue;
+            }
+
+            // Create target directory if it does not exist
+            if(!Directory.Exists(targetDir))
+            {
+                Directory.CreateDirectory(targetDir);
+            }
+
+            // Copy images to targe directory
+            foreach (var file in files) 
+            {
+                string newFilename = Path.Combine(targetDir, file.Name);
+                if (File.Exists(newFilename))
+                {
+                    Console.WriteLine("Skipping, file already exists: " + newFilename);
+                    continue;
+                }
+
+                try 
+                {
+                    File.Copy(file.FullName, newFilename);
+                }
+                catch (Exception e)
+                {
+                    Console.Error.WriteLine("Error copying file: \n" + file.FullName + " ----> " + newFilename + "\nReason: " + e.Message);
+                }
+
+            }
         }
-            
     }
 
     private static (FileInfo, DirectoryInfo) ParseArgs(string[] args) {
@@ -32,6 +69,7 @@ internal class Program
         if (!sourceFile.Exists) {
             Console.WriteLine("Source file does not exist.");
             Environment.Exit(1);
+            throw new InvalidOperationException();
         }
 
         if (!destination.Exists) {
@@ -53,4 +91,15 @@ internal class Program
             }
         }
     }
+
+    private static IEnumerable<FileInfo> GetImageFiles(DirectoryInfo dir)
+    {
+        var extensions = new[] { ".jpg", ".jpeg", ".png", ".bmp", ".gif", ".mp4", ".mov", ".webp", ".heic", ".tiff" };
+
+        var files = dir
+            .GetFiles("*.*", SearchOption.TopDirectoryOnly)
+            .Where(file => extensions.Contains(file.Extension.ToLower()));
+
+        return files;
+    }    
 }
