@@ -1,0 +1,10 @@
+{
+    "profiles": {
+        "ImgCopy": {
+            "commandName": "Project",
+            "project": "ImgCopy.csproj",
+            "commandLineArgs": "source.txt output",
+            "workingDirectory": "."
+        }
+    }
+}
