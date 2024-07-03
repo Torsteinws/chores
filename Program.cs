@@ -7,7 +7,16 @@ internal class Program
     static void Main(string[] args)
     {
         var (sourceFile, destination) = ParseArgs(args);
-        var files = ParseFile(sourceFile.FullName);
+        foreach(var dir in GetSourceDirectories(sourceFile.FullName))
+        {
+            Console.WriteLine(dir.FullName);
+
+            // foreach (var file in dir.GetFiles())
+            // {
+            //     var destFile = Path.Combine(destination.FullName, file.Name);
+            //     file.CopyTo(destFile, true);
+            // }
+        }
             
     }
 
@@ -32,14 +41,16 @@ internal class Program
         return (sourceFile, destination);
     }
 
-    private static List<string> ParseFile(string path) {
-        var paths = new List<string>();
-        using (var reader = new StreamReader(path)) {
-            string? line = reader.ReadLine();
-            while (line is not null) {
-                paths.Add(line.Trim());
+    private static IEnumerable<DirectoryInfo> GetSourceDirectories(string path) 
+    {
+        using var reader = new StreamReader(path);
+        foreach(var line in File.ReadLines(path))
+        {
+            var dir = new DirectoryInfo(line);
+            if (dir.Exists)
+            {
+                yield return dir;
             }
         }
-        return paths;
     }
 }
