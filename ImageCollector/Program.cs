@@ -59,7 +59,7 @@ internal class Program
         if(successCount > 0)
         {
             Console.ForegroundColor = ConsoleColor.Green;
-            Console.WriteLine($"\nCopied {successCount} {(successCount == 1 ? "file" : "files")} to: {rootDir.FullName}");
+            Console.WriteLine($"\nCopied {successCount} {(successCount == 1 ? "file" : "files")} to: {outputDir.FullName}");
             Console.ResetColor();
         }
     }
@@ -102,9 +102,15 @@ internal class Program
     {
         var extensions = new[] { ".jpg", ".jpeg", ".png", ".bmp", ".gif", ".mp4", ".mov", ".webp", ".heic", ".tiff" };
 
+        var excludedDirs = dir.GetDirectories("Image Collector Result*", SearchOption.TopDirectoryOnly)
+                              .Select(d => d.FullName);
+
         var files = dir
             .GetFiles("*.*", SearchOption.AllDirectories)
-            .Where(file => extensions.Contains(file.Extension.ToLower()));
+            .Where(file => 
+                extensions.Contains(file.Extension.ToLower()) &&
+                !excludedDirs.Any(path => file.DirectoryName?.StartsWith(path) ?? false)
+            ); 
 
         return files;        
     }
