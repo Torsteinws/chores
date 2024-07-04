@@ -20,18 +20,17 @@ internal class Program
 
         if(totalCount > 0)
         {
-            Console.SetCursorPosition(0, Console.CursorTop);
             Console.Write("Copying files: 0%");
         }
 
         foreach(var srcFile in GetImageFiles(rootDir))
         {
             currentCount++;
-            if(currentCount % 100 == 0)
+            if(currentCount % 20 == 0)
             {
-                Console.SetCursorPosition(0, Console.CursorTop);
-                double percent = Math.Round((double)currentCount / totalCount * 100, totalCount < 5000 ? 0 : 1, MidpointRounding.ToPositiveInfinity);
-                Console.Write($"Copying files: {percent}%");
+                Console.SetCursorPosition(15, Console.CursorTop);
+                double percent = Math.Round((double)currentCount / totalCount * 100, 1, MidpointRounding.ToPositiveInfinity);
+                Console.Write($"{percent:00.0}%".PadRight(6));
             }
 
 
@@ -53,7 +52,7 @@ internal class Program
         if(totalCount > 0) 
         {
             Console.SetCursorPosition(0, Console.CursorTop);
-            Console.WriteLine("Copying files: 100%");
+            Console.WriteLine("Copying files: 100%       ");
         }
 
         if(successCount > 0)
@@ -61,6 +60,11 @@ internal class Program
             Console.ForegroundColor = ConsoleColor.Green;
             Console.WriteLine($"\nCopied {successCount} {(successCount == 1 ? "file" : "files")} to: {outputDir.FullName}");
             Console.ResetColor();
+        }
+
+        if(successCount == 0)
+        {
+            Directory.Delete(outputDir.FullName);
         }
 
         Console.WriteLine("\nPress any key to exit...");
