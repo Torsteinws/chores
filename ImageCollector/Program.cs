@@ -27,10 +27,10 @@ internal class Program
         foreach(var srcFile in GetImageFiles(rootDir))
         {
             currentCount++;
-            if(currentCount % 40 == 0)
+            if(currentCount % 100 == 0)
             {
                 Console.SetCursorPosition(0, Console.CursorTop);
-                int percent = (int)Math.Round((double)currentCount / totalCount * 100, 1, MidpointRounding.ToPositiveInfinity);
+                double percent = Math.Round((double)currentCount / totalCount * 100, totalCount < 5000 ? 0 : 1, MidpointRounding.ToPositiveInfinity);
                 Console.Write($"Copying files: {percent}%");
             }
 
@@ -62,6 +62,9 @@ internal class Program
             Console.WriteLine($"\nCopied {successCount} {(successCount == 1 ? "file" : "files")} to: {outputDir.FullName}");
             Console.ResetColor();
         }
+
+        Console.WriteLine("\nPress any key to exit...");
+        Console.ReadKey();
     }
 
 
