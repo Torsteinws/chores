@@ -28,9 +28,9 @@ internal class Program
             currentCount++;
             if(currentCount % 20 == 0)
             {
-                Console.SetCursorPosition(15, Console.CursorTop);
+                Console.SetCursorPosition(14, Console.CursorTop);
                 double percent = Math.Round((double)currentCount / totalCount * 100, 1, MidpointRounding.ToPositiveInfinity);
-                Console.Write($"{percent:00.0}%".PadRight(6));
+                Console.Write($" {percent:00.0}%".PadRight(7));
             }
 
 
