@@ -8,9 +8,20 @@ internal class Program
     {
         DirectoryInfo rootDir = new(Directory.GetCurrentDirectory());
         DirectoryInfo outputDir = GetOutputDirectory(rootDir);
-        foreach(var file in GetImageFiles(rootDir))
+        foreach(var srcFile in GetImageFiles(rootDir))
         {
-            Console.WriteLine(file.FullName);
+            FileInfo dstFile;
+            try 
+            {
+                dstFile = CreateUniqueFilename(outputDir, srcFile.Name);
+            }
+            catch (ArgumentException e)
+            {
+                Console.Error.WriteLine($"Error: Skipping file {srcFile.FullName}\nReason: {e.Message}");
+                continue;
+            }
+
+            File.Copy(srcFile.FullName, dstFile.FullName);
         }
     }
 
@@ -31,6 +42,21 @@ internal class Program
         return outputDir;
     }
 
+    static FileInfo CreateUniqueFilename(DirectoryInfo baseDir, string desiredFilename) 
+    {
+        var baseName = Path.GetFileNameWithoutExtension(desiredFilename);
+        var extension = Path.GetExtension(desiredFilename);
+
+        var availablePath = Path.Combine(baseDir.FullName, desiredFilename);
+        int i = 1;
+        while(File.Exists(availablePath))
+        {
+            availablePath = Path.Combine(baseDir.FullName, $"{baseName}-{i:D3}{extension}");
+            i++;
+        }
+        
+        return new FileInfo(availablePath);
+    }
 
     static IEnumerable<FileInfo> GetImageFiles(DirectoryInfo dir)
     {
@@ -42,5 +68,4 @@ internal class Program
 
         return files;        
     }
-
 }
