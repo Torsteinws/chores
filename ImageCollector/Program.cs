@@ -7,10 +7,28 @@ internal class Program
     static void Main(string[] args)
     {
         DirectoryInfo rootDir = new(Directory.GetCurrentDirectory());
+        DirectoryInfo outputDir = GetOutputDirectory(rootDir);
         foreach(var file in GetImageFiles(rootDir))
         {
             Console.WriteLine(file.FullName);
         }
+    }
+
+    static DirectoryInfo GetOutputDirectory(DirectoryInfo baseDir)
+    {
+        var basePath = Path.Combine(baseDir.FullName, "image-collector-result");
+
+        var availablePath = basePath;
+        int i = 1;
+        while(Directory.Exists(availablePath))
+        {   
+            availablePath = $"{basePath}-{i:D3}";
+            i++;
+        }
+
+        DirectoryInfo outputDir = Directory.CreateDirectory(availablePath);
+
+        return outputDir;
     }
 
 
