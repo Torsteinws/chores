@@ -1,5 +1,5 @@
 # About
-Recursively find all image files in the current directory, and copy them to a new directory called *Image Collector Result*
+Recursively find all image files in the current directory, and copy them to a new directory called `Image Collector Result`
 
 # Prerequisite
 - Dotnet 8
@@ -20,5 +20,5 @@ Build a single file executable with these commands. You can find the executable 
 See full list of supported supported OSes [here](https://learn.microsoft.com/en-us/dotnet/core/rid-catalog).
 
 # Usage
-Move executable to the directory you want to start your image search, then start the executable by double clicking it. 
-The result will be in a directory called image-collector-result.
+Move executable to a directory, then start the image search by double clicking the executable. 
+The result will be in a directory called `Image Collector Result`.
