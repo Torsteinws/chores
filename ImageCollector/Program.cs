@@ -27,13 +27,13 @@ internal class Program
 
     static DirectoryInfo GetOutputDirectory(DirectoryInfo baseDir)
     {
-        var basePath = Path.Combine(baseDir.FullName, "image-collector-result");
+        var basePath = Path.Combine(baseDir.FullName, "Image Collector Result");
 
         var availablePath = basePath;
         int i = 1;
         while(Directory.Exists(availablePath))
         {   
-            availablePath = $"{basePath}-{i:D3}";
+            availablePath = $"{basePath} ({i})";
             i++;
         }
 
@@ -51,7 +51,7 @@ internal class Program
         int i = 1;
         while(File.Exists(availablePath))
         {
-            availablePath = Path.Combine(baseDir.FullName, $"{baseName}-{i:D3}{extension}");
+            availablePath = Path.Combine(baseDir.FullName, $"{baseName} ({i}){extension}");
             i++;
         }
         

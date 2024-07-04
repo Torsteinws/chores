@@ -1,5 +1,5 @@
 # About
-Recursively find all image files in the current directory, and copy them to a new directory *image-collector-result*
+Recursively find all image files in the current directory, and copy them to a new directory called *Image Collector Result*
 
 # Prerequisite
 - Dotnet 8
