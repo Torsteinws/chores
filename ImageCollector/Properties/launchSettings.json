@@ -1,0 +1,9 @@
+{
+    "profiles": {
+        "ImgCopy": {
+            "commandName": "Project",
+            "project": "ImageCollector.csproj",
+            "workingDirectory": "."
+        }
+    }
+}
