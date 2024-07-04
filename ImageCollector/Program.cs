@@ -8,8 +8,33 @@ internal class Program
     {
         DirectoryInfo rootDir = new(Directory.GetCurrentDirectory());
         DirectoryInfo outputDir = GetOutputDirectory(rootDir);
+
+        Console.WriteLine("Searching for files...");
+        var files = GetImageFiles(rootDir);
+
+        int currentCount = 0;
+        int successCount = 0;
+        int totalCount = files.Count();
+        
+        Console.WriteLine($"Files found: {totalCount}\n");
+
+        if(totalCount > 0)
+        {
+            Console.SetCursorPosition(0, Console.CursorTop);
+            Console.Write("Copying files: 0%");
+        }
+
         foreach(var srcFile in GetImageFiles(rootDir))
         {
+            currentCount++;
+            if(currentCount % 40 == 0)
+            {
+                Console.SetCursorPosition(0, Console.CursorTop);
+                int percent = (int)Math.Round((double)currentCount / totalCount * 100, 1, MidpointRounding.ToPositiveInfinity);
+                Console.Write($"Copying files: {percent}%");
+            }
+
+
             FileInfo dstFile;
             try 
             {
@@ -22,8 +47,23 @@ internal class Program
             }
 
             File.Copy(srcFile.FullName, dstFile.FullName);
+            successCount++;
+        }
+
+        if(totalCount > 0) 
+        {
+            Console.SetCursorPosition(0, Console.CursorTop);
+            Console.WriteLine("Copying files: 100%");
+        }
+
+        if(successCount > 0)
+        {
+            Console.ForegroundColor = ConsoleColor.Green;
+            Console.WriteLine($"\nCopied {successCount} {(successCount == 1 ? "file" : "files")} to: {rootDir.FullName}");
+            Console.ResetColor();
         }
     }
+
 
     static DirectoryInfo GetOutputDirectory(DirectoryInfo baseDir)
     {
